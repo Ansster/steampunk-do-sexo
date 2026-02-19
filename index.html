@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha — Terra Devastada</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#080604; --bg2:#0e0b07; --bg3:#131008; --panel:#100d08;
+  --brass:#c8922a; --gold:#e4b84a; --gold-dim:#9a7830; --copper:#b5642a;
+  --amber:#ff9a20; --rust:#7a2e10; --iron:#2a241c; --iron2:#1e1a12;
+  --text:#d8c49a; --text-dim:#7a6a4a; --text-faint:#3a3020;
+  --glow:rgba(200,146,42,0.15); --red:#c0321b; --red-glow:rgba(192,50,27,0.4);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  font-family:'Libre Baskerville',serif;
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:0.3;pointer-events:none;z-index:0;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 48px,rgba(200,146,42,0.02) 48px,rgba(200,146,42,0.02) 49px),
+    repeating-linear-gradient(90deg,transparent,transparent 48px,rgba(200,146,42,0.02) 48px,rgba(200,146,42,0.02) 49px);
+  pointer-events:none;z-index:0;
+}
+#app{position:relative;z-index:1;max-width:520px;margin:0 auto;}
+
+/* ═══ HEADER ═══ */
+.h-bar{height:4px;background:linear-gradient(90deg,transparent,var(--copper) 20%,var(--gold) 50%,var(--copper) 80%,transparent);box-shadow:0 0 24px rgba(200,146,42,0.6),0 2px 50px rgba(200,146,42,0.15);}
+.h-main{
+  padding:18px 20px 15px;
+  display:flex;align-items:center;gap:16px;
+  border-bottom:1px solid rgba(200,146,42,0.25);
+  background:linear-gradient(180deg,#1c130600,#0e0b07);
+}
+.gear-wrap{position:relative;width:52px;height:52px;flex-shrink:0;}
+.gear-a{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:52px;color:var(--gold-dim);animation:spin 28s linear infinite;line-height:1;filter:drop-shadow(0 0 10px rgba(200,146,42,0.35));}
+.gear-b{position:absolute;inset:14px;display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--brass);animation:spin 16s linear infinite reverse;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.h-text h1{font-family:'Playfair Display',serif;font-size:21px;font-weight:900;letter-spacing:5px;text-transform:uppercase;color:var(--gold);text-shadow:0 0 30px rgba(228,184,74,0.35),0 0 70px rgba(228,184,74,0.08);line-height:1;}
+.h-text .sub{font-family:'Courier Prime',monospace;font-size:8px;letter-spacing:3px;color:var(--text-dim);margin-top:5px;text-transform:uppercase;}
+.h-rivets{display:flex;flex-direction:column;gap:6px;}
+.rivet{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f0d070,#7a5010 60%,#3a2508);box-shadow:0 0 6px rgba(200,146,42,0.3),inset 0 1px 1px rgba(255,220,80,0.4);}
+
+/* ═══ IDENTITY ═══ */
+.identity{background:linear-gradient(180deg,#0e0b07,#080604);border-bottom:1px solid rgba(200,146,42,0.15);padding:14px 18px;}
+.id-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.id-row:last-child{margin-bottom:0;}
+.field{display:flex;flex-direction:column;gap:4px;}
+.field label{font-family:'Courier Prime',monospace;font-size:7px;letter-spacing:3px;color:var(--text-faint);text-transform:uppercase;}
+.field input{background:transparent;border:none;border-bottom:1px solid var(--iron);color:var(--gold);font-family:'IM Fell English',serif;font-size:14px;padding:3px 0;outline:none;width:100%;transition:border-color .3s;}
+.field input:focus{border-bottom-color:var(--brass);}
+.field input::placeholder{color:var(--text-faint);font-style:italic;}
+
+/* ═══ VITALS ═══ */
+.vitals{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(200,146,42,0.15);}
+.v-panel{padding:14px 16px;position:relative;}
+.v-panel:first-child{border-right:1px solid rgba(200,146,42,0.1);}
+.v-hdr{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.v-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.hp-dot{background:var(--red);box-shadow:0 0 8px var(--red),0 0 18px rgba(192,50,27,0.25);animation:blink-r 2s ease-in-out infinite;}
+.pe-dot{background:var(--amber);box-shadow:0 0 8px var(--amber),0 0 18px rgba(255,154,32,0.25);animation:blink-a 3s ease-in-out infinite;}
+@keyframes blink-r{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes blink-a{0%,100%{opacity:1}50%{opacity:.3}}
+.v-hdr span{font-family:'Courier Prime',monospace;font-size:7px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase;}
+.v-nums{display:flex;align-items:baseline;gap:4px;margin-bottom:10px;}
+.v-nums input{background:transparent;border:none;font-family:'Playfair Display',serif;font-size:30px;font-weight:700;text-align:center;outline:none;width:50px;color:var(--gold);text-shadow:0 0 20px rgba(228,184,74,0.25);}
+.v-slash{color:var(--text-dim);font-size:16px;}
+.v-nums input.max-i{font-size:15px;width:36px;color:var(--text-dim);}
+.hp-track{display:flex;flex-wrap:wrap;gap:3px;}
+.hp-pip{width:13px;height:13px;border:1px solid rgba(200,146,42,0.2);background:transparent;cursor:pointer;transition:all .15s;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);}
+.hp-pip:hover{transform:scale(1.2);}
+.hp-pip.on{background:var(--red);border-color:var(--red);box-shadow:0 0 6px var(--red-glow);}
+.pe-track{display:flex;gap:5px;}
+.pe-box{width:28px;height:28px;border:1px solid rgba(200,146,42,0.25);background:rgba(200,146,42,0.02);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;position:relative;}
+.pe-box::before,.pe-box::after{content:'';position:absolute;background:var(--amber);opacity:0;transition:opacity .15s;width:60%;height:1px;}
+.pe-box::before{transform:rotate(45deg);}
+.pe-box::after{transform:rotate(-45deg);}
+.pe-box.on{border-color:var(--amber);background:rgba(255,154,32,0.07);box-shadow:0 0 8px rgba(255,154,32,0.2),inset 0 0 6px rgba(255,154,32,0.08);}
+.pe-box.on::before,.pe-box.on::after{opacity:1;}
+.pe-box:hover{border-color:var(--brass);}
+
+/* ═══ TABS ═══ */
+.tabs{display:flex;background:var(--bg2);border-bottom:2px solid rgba(200,146,42,0.25);position:sticky;top:0;z-index:50;box-shadow:0 4px 24px rgba(0,0,0,0.85);}
+.tabs::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,146,42,0.3),transparent);}
+.t-btn{flex:1;padding:11px 4px 9px;background:transparent;border:none;border-right:1px solid rgba(200,146,42,0.08);color:var(--text-dim);font-family:'Courier Prime',monospace;font-size:7px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .25s;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;outline:none;}
+.t-btn:last-child{border-right:none;}
+.t-btn .ti{font-size:17px;transition:filter .25s;}
+.t-btn.active{color:var(--gold);background:linear-gradient(180deg,rgba(200,146,42,0.07),transparent);}
+.t-btn.active .ti{filter:drop-shadow(0 0 6px rgba(228,184,74,0.7));}
+.t-btn.active::after{content:'';position:absolute;bottom:-2px;left:10%;right:10%;height:2px;background:var(--gold);box-shadow:0 0 10px rgba(228,184,74,0.7);}
+.t-btn:hover:not(.active){color:var(--text);background:rgba(200,146,42,0.03);}
+
+/* ═══ PANE ═══ */
+.pane{display:none;padding:16px 16px 28px;}
+.pane.active{display:block;}
+
+/* ─ SECTION TITLE ─ */
+.sec{display:flex;align-items:center;gap:10px;margin-bottom:13px;margin-top:4px;}
+.sec h2{font-family:'Playfair Display',serif;font-size:10px;font-weight:700;letter-spacing:4px;color:var(--brass);text-transform:uppercase;white-space:nowrap;}
+.sec-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(200,146,42,0.35),transparent);}
+
+/* ─ DIVIDER ─ */
+.divider{text-align:center;color:rgba(200,146,42,0.2);font-size:10px;letter-spacing:8px;margin:16px 0;position:relative;}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:28%;height:1px;background:linear-gradient(90deg,transparent,rgba(200,146,42,0.18));}
+.divider::before{left:0;}
+.divider::after{right:0;background:linear-gradient(270deg,transparent,rgba(200,146,42,0.18));}
+
+/* ═══ ATRIBUTOS ═══ */
+.attrs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.attr-card{
+  background:linear-gradient(145deg,#131008,#0a0804);
+  border:1px solid rgba(200,146,42,0.18);
+  padding:12px 8px 10px;text-align:center;position:relative;
+  transition:border-color .2s,box-shadow .2s;
+}
+.attr-card:hover{border-color:rgba(200,146,42,0.45);box-shadow:0 0 22px rgba(200,146,42,0.06);}
+.attr-card::before{content:'◆';position:absolute;top:-5px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--brass);background:#131008;padding:0 4px;}
+.attr-name{font-family:'Courier Prime',monospace;font-size:7px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:9px;}
+.attr-dots{display:flex;justify-content:center;gap:5px;margin-bottom:6px;}
+.dot{width:14px;height:14px;border-radius:50%;border:1px solid rgba(200,146,42,0.35);background:transparent;cursor:pointer;transition:all .15s;}
+.dot.on{background:radial-gradient(circle at 35% 35%,var(--gold),var(--copper));border-color:var(--gold);box-shadow:0 0 8px rgba(228,184,74,0.45);}
+.dot:hover:not(.on){border-color:var(--brass);transform:scale(1.15);}
+.attr-val{font-family:'Courier Prime',monospace;font-size:9px;color:var(--text-faint);}
+
+/* ═══ CA ═══ */
+.ca-block{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#131008,#0a0804);border:1px solid rgba(200,146,42,0.18);padding:10px 14px;margin-bottom:8px;}
+.ca-label{font-family:'Courier Prime',monospace;font-size:8px;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase;flex:1;}
+.ca-input{background:transparent;border:none;border-bottom:1px solid var(--gold-dim);color:var(--gold);font-family:'Playfair Display',serif;font-size:24px;font-weight:700;text-align:center;width:52px;outline:none;}
+
+/* ═══ CARACTERÍSTICAS ═══ */
+.char-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.char-item{display:flex;flex-direction:column;gap:4px;}
+.char-item label{font-family:'Courier Prime',monospace;font-size:7px;letter-spacing:2px;color:var(--text-faint);text-transform:uppercase;}
+.char-item input{background:rgba(200,146,42,0.02);border:1px solid rgba(200,146,42,0.1);border-left:2px solid rgba(200,146,42,0.3);color:var(--text);font-family:'IM Fell English',serif;font-size:13px;padding:5px 7px;outline:none;transition:border-color .2s;}
+.char-item input:focus{border-left-color:var(--brass);border-color:rgba(200,146,42,0.3);}
+.char-item input::placeholder{color:var(--text-faint);font-style:italic;}
+.desc-full{width:100%;min-height:70px;background:rgba(200,146,42,0.015);border:1px solid rgba(200,146,42,0.1);border-left:2px solid rgba(200,146,42,0.25);color:var(--text);font-family:'IM Fell English',serif;font-size:13px;font-style:italic;padding:8px;outline:none;resize:vertical;line-height:1.7;}
+.desc-full:focus{border-color:rgba(200,146,42,0.3);}
+.desc-full::placeholder{color:var(--text-faint);}
+
+/* ═══ CONDIÇÕES ═══ */
+.cond-list{display:flex;flex-direction:column;gap:0;}
+.cond-item{border:1px solid transparent;border-bottom:1px solid rgba(200,146,42,0.07);padding:9px 10px;display:flex;align-items:flex-start;gap:10px;transition:all .15s;cursor:pointer;position:relative;}
+.cond-item:hover{background:rgba(200,146,42,0.025);}
+.cond-item.active{background:rgba(192,50,27,0.05);border-color:rgba(192,50,27,0.2);border-bottom-color:rgba(192,50,27,0.2);}
+.cond-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--red);box-shadow:0 0 8px var(--red-glow);}
+.cond-box{width:16px;height:16px;border:1px solid rgba(200,146,42,0.25);background:transparent;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:10px;color:transparent;}
+.cond-item.active .cond-box{border-color:var(--red);background:rgba(192,50,27,0.18);color:var(--red);}
+.cond-body{flex:1;}
+.cond-name{font-family:'Playfair Display',serif;font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:2px;margin-bottom:3px;}
+.cond-item.active .cond-name{color:#e05040;}
+.cond-desc{font-family:'IM Fell English',serif;font-size:11px;font-style:italic;color:var(--text-dim);line-height:1.6;}
+.cond-tag{display:inline-block;margin-top:4px;font-family:'Courier Prime',monospace;font-size:7px;letter-spacing:1px;color:var(--copper);border:1px solid rgba(181,100,42,0.28);padding:1px 5px;}
+
+/* ═══ PERÍCIAS ═══ */
+.peri-row{display:flex;align-items:center;gap:8px;padding:7px 8px;border-bottom:1px solid rgba(200,146,42,0.05);transition:background .15s;}
+.peri-row:hover{background:rgba(200,146,42,0.025);}
+.peri-chk{width:14px;height:14px;border:1px solid rgba(200,146,42,0.28);background:transparent;cursor:pointer;appearance:none;-webkit-appearance:none;flex-shrink:0;transition:all .15s;position:relative;}
+.peri-chk:checked{background:radial-gradient(circle at 38% 35%,var(--gold),var(--copper));border-color:var(--gold);box-shadow:0 0 6px rgba(228,184,74,0.4);}
+.peri-name{flex:1;font-family:'Libre Baskerville',serif;font-size:12px;color:var(--text);}
+.peri-atr{font-family:'Courier Prime',monospace;font-size:8px;letter-spacing:1px;color:var(--text-faint);width:28px;text-align:center;}
+.peri-bon{font-family:'Playfair Display',serif;font-size:14px;color:var(--gold);width:36px;text-align:center;background:transparent;border:none;border-bottom:1px solid rgba(200,146,42,0.18);outline:none;padding:0 4px;}
+
+/* ═══ HABILIDADES ═══ */
+.hab-card{background:linear-gradient(145deg,#131008,#0d0a06);border:1px solid rgba(200,146,42,0.16);margin-bottom:10px;position:relative;overflow:hidden;}
+.hab-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--copper),transparent);opacity:.5;}
+.hab-hdr{display:flex;align-items:center;gap:8px;padding:10px 12px 8px;border-bottom:1px solid rgba(200,146,42,0.08);}
+.hab-name{flex:1;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--gold);background:transparent;border:none;outline:none;border-bottom:1px solid transparent;transition:border-color .2s;}
+.hab-name:focus{border-bottom-color:rgba(200,146,42,0.28);}
+.hab-name::placeholder{color:var(--text-faint);font-style:italic;font-weight:400;}
+.hab-type{font-family:'Courier Prime',monospace;font-size:8px;letter-spacing:1px;padding:2px 7px;color:var(--copper);border:1px solid rgba(181,100,42,0.28);background:rgba(181,100,42,0.04);outline:none;cursor:pointer;}
+.hab-del{background:transparent;border:none;color:var(--rust);cursor:pointer;font-size:16px;opacity:.4;transition:opacity .15s;line-height:1;padding:0;}
+.hab-del:hover{opacity:1;}
+.hab-desc{width:100%;min-height:52px;background:transparent;border:none;color:var(--text);font-family:'IM Fell English',serif;font-size:12px;font-style:italic;padding:10px 12px;resize:vertical;outline:none;line-height:1.7;}
+.hab-desc::placeholder{color:var(--text-faint);}
+.add-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:transparent;border:1px dashed rgba(200,146,42,0.18);color:var(--text-dim);font-family:'Courier Prime',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;padding:10px;cursor:pointer;transition:all .2s;margin-top:4px;}
+.add-btn:hover{border-color:rgba(200,146,42,0.45);color:var(--gold);background:rgba(200,146,42,0.03);box-shadow:0 0 20px rgba(200,146,42,0.04);}
+
+/* ═══ INVENTÁRIO ═══ */
+.inv-thead{display:grid;grid-template-columns:2fr 1fr 0.5fr 1fr 22px;gap:6px;padding:0 8px 6px;border-bottom:1px solid rgba(200,146,42,0.18);margin-bottom:2px;}
+.inv-thead span{font-family:'Courier Prime',monospace;font-size:7px;letter-spacing:2px;color:var(--text-faint);text-transform:uppercase;}
+.inv-row{display:grid;grid-template-columns:2fr 1fr 0.5fr 1fr 22px;gap:6px;padding:5px 8px;border-bottom:1px solid rgba(200,146,42,0.04);align-items:center;transition:background .15s;}
+.inv-row:nth-child(even){background:rgba(200,146,42,0.015);}
+.inv-row:hover{background:rgba(200,146,42,0.035);}
+.inv-in{background:transparent;border:none;border-bottom:1px solid rgba(200,146,42,0.09);color:var(--text);font-family:'Libre Baskerville',serif;font-size:11px;padding:2px 3px;outline:none;width:100%;transition:border-color .2s;}
+.inv-in:focus{border-bottom-color:var(--brass);}
+.inv-in::placeholder{color:var(--text-faint);font-style:italic;}
+.inv-del{background:transparent;border:none;color:var(--rust);cursor:pointer;font-size:12px;opacity:.3;transition:opacity .15s;text-align:center;}
+.inv-del:hover{opacity:1;}
+.inv-footer{display:flex;gap:0;margin-top:14px;border:1px solid rgba(200,146,42,0.1);background:linear-gradient(135deg,rgba(200,146,42,0.025),transparent);}
+.inv-cur{display:flex;flex-direction:column;gap:5px;flex:1;align-items:center;padding:12px 8px;border-right:1px solid rgba(200,146,42,0.08);}
+.inv-cur:last-child{border-right:none;}
+.inv-cur label{font-family:'Courier Prime',monospace;font-size:7px;letter-spacing:2px;color:var(--text-faint);text-transform:uppercase;}
+.inv-cur input{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--gold);background:transparent;border:none;border-bottom:1px solid rgba(200,146,42,0.18);text-align:center;outline:none;width:60px;}
+
+/* ═══ NOTAS ═══ */
+.notas{width:100%;min-height:90px;background:rgba(200,146,42,0.01);border:1px solid rgba(200,146,42,0.1);color:var(--text);font-family:'IM Fell English',serif;font-size:13px;font-style:italic;padding:10px;resize:vertical;outline:none;line-height:1.8;}
+.notas:focus{border-color:rgba(200,146,42,0.28);}
+.notas::placeholder{color:var(--text-faint);}
+
+.bottom-bar{height:4px;background:linear-gradient(90deg,transparent,var(--copper) 20%,var(--gold) 50%,var(--copper) 80%,transparent);box-shadow:0 0 20px rgba(200,146,42,0.4);margin-top:20px;}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--gold-dim);}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- HEADER -->
+<div class="h-bar"></div>
+<div class="h-main">
+  <div class="gear-wrap">
+    <div class="gear-a">⚙</div>
+    <div class="gear-b">⚙</div>
+  </div>
+  <div class="h-text">
+    <h1>Terra Devastada</h1>
+    <div class="sub">▸ Ficha de Personagem · Edição Mecanicista ◂</div>
+  </div>
+  <div class="h-rivets">
+    <div class="rivet"></div>
+    <div class="rivet"></div>
+    <div class="rivet"></div>
+  </div>
+</div>
+
+<!-- IDENTITY -->
+<div class="identity">
+  <div class="id-row">
+    <div class="field">
+      <label>Nome do Personagem</label>
+      <input type="text" placeholder="Como te chamam...">
+    </div>
+    <div class="field">
+      <label>Títulos</label>
+      <input type="text" placeholder="Ex: O Ferreiro do Caos">
+    </div>
+  </div>
+  <div class="id-row">
+    <div class="field">
+      <label>Nível</label>
+      <input type="text" placeholder="1">
+    </div>
+    <div class="field">
+      <label>Origem / Facção</label>
+      <input type="text" placeholder="—">
+    </div>
+  </div>
+</div>
+
+<!-- VITALS -->
+<div class="vitals">
+  <div class="v-panel">
+    <div class="v-hdr"><span class="v-dot hp-dot"></span><span>Pontos de Vida</span></div>
+    <div class="v-nums">
+      <input type="number" id="hp-c" value="10" min="0" oninput="rv()">
+      <span class="v-slash">/</span>
+      <input type="number" id="hp-m" class="max-i" value="10" min="1" oninput="rv()">
+    </div>
+    <div class="hp-track" id="hp-t"></div>
+  </div>
+  <div class="v-panel">
+    <div class="v-hdr"><span class="v-dot pe-dot"></span><span>Pontos de Estresse</span></div>
+    <div class="v-nums">
+      <input type="number" id="pe-c" value="0" min="0" max="5" oninput="rv()">
+      <span class="v-slash">/</span>
+      <span style="font-family:'Playfair Display',serif;font-size:16px;color:var(--text-dim);">5</span>
+    </div>
+    <div class="pe-track" id="pe-t"></div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="t-btn active" onclick="tab('atr',this)"><span class="ti">⚙</span>Atributos</button>
+  <button class="t-btn" onclick="tab('per',this)"><span class="ti">📜</span>Perícias</button>
+  <button class="t-btn" onclick="tab('hab',this)"><span class="ti">⚡</span>Habilidades</button>
+  <button class="t-btn" onclick="tab('inv',this)"><span class="ti">⚒</span>Inventário</button>
+</div>
+
+<!-- ══ ABA ATRIBUTOS ══ -->
+<div id="p-atr" class="pane active">
+
+  <div class="sec"><div class="rivet"></div><h2>Atributos</h2><div class="sec-line"></div><div class="rivet"></div></div>
+  <div class="attrs-grid" id="ag"></div>
+
+  <div class="divider">· ⚙ · ⚙ ·</div>
+
+  <div class="sec"><div class="rivet"></div><h2>Defesa</h2><div class="sec-line"></div></div>
+  <div class="ca-block">
+    <span class="ca-label">Classe de Armadura</span>
+    <input class="ca-input" type="number" value="10">
+  </div>
+
+  <div class="divider">· ⚙ · ⚙ ·</div>
+
+  <div class="sec"><div class="rivet"></div><h2>Características</h2><div class="sec-line"></div></div>
+  <div class="char-grid">
+    <div class="char-item"><label>Altura</label><input type="text" placeholder="Ex: 1,78m"></div>
+    <div class="char-item"><label>Peso</label><input type="text" placeholder="Ex: 72 kg"></div>
+    <div class="char-item"><label>Idade</label><input type="text" placeholder="Ex: 34 anos"></div>
+    <div class="char-item"><label>Olhos / Cabelo</label><input type="text" placeholder="Ex: castanhos, preto"></div>
+    <div class="char-item"><label>Pele / Traços</label><input type="text" placeholder="Ex: morena, cicatriz..."></div>
+    <div class="char-item"><label>Aparência Geral</label><input type="text" placeholder="Ex: robusta, cansada..."></div>
+  </div>
+  <div class="char-item" style="margin-top:8px;">
+    <label>História &amp; Personalidade</label>
+    <textarea class="desc-full" rows="4" placeholder="Traços de personalidade, vínculos, motivações, história do personagem..."></textarea>
+  </div>
+
+  <div class="divider">· ⚙ · ⚙ ·</div>
+
+  <div class="sec"><div class="rivet"></div><h2>Condições</h2><div class="sec-line"></div></div>
+  <div class="cond-list" id="cl"></div>
+
+  <div class="divider">· ⚙ · ⚙ ·</div>
+
+  <div class="sec"><div class="rivet"></div><h2>Anotações</h2><div class="sec-line"></div></div>
+  <textarea class="notas" placeholder="Notas da sessão, pistas, lembretes..."></textarea>
+</div>
+
+<!-- ══ ABA PERÍCIAS ══ -->
+<div id="p-per" class="pane">
+  <div class="sec"><div class="rivet"></div><h2>Perícias</h2><div class="sec-line"></div><div class="rivet"></div></div>
+  <div id="pl"></div>
+</div>
+
+<!-- ══ ABA HABILIDADES ══ -->
+<div id="p-hab" class="pane">
+  <div class="sec"><div class="rivet"></div><h2>Habilidades &amp; Poderes</h2><div class="sec-line"></div><div class="rivet"></div></div>
+  <div id="hl"></div>
+  <button class="add-btn" onclick="addH()">⊕ &nbsp; Adicionar Habilidade</button>
+</div>
+
+<!-- ══ ABA INVENTÁRIO ══ -->
+<div id="p-inv" class="pane">
+  <div class="sec"><div class="rivet"></div><h2>Inventário</h2><div class="sec-line"></div><div class="rivet"></div></div>
+  <div class="inv-thead">
+    <span>Item</span><span>Tipo</span><span>Qtd</span><span>Notas</span><span></span>
+  </div>
+  <div id="il"></div>
+  <button class="add-btn" onclick="addI()" style="margin-top:8px;">⊕ &nbsp; Adicionar Item</button>
+  <div class="inv-footer">
+    <div class="inv-cur"><label>Moedas de Vapor</label><input type="number" value="0"></div>
+    <div class="inv-cur"><label>Fragmentos</label><input type="number" value="0"></div>
+    <div class="inv-cur"><label>Peso Total</label><input type="text" value="—"></div>
+  </div>
+  <div style="margin-top:16px;">
+    <div class="sec"><div class="rivet"></div><h2>Notas de Equipamento</h2><div class="sec-line"></div></div>
+    <textarea class="notas" placeholder="Itens equipados, armas especiais, contratos..."></textarea>
+  </div>
+</div>
+
+<div class="bottom-bar"></div>
+</div>
+
+<script>
+/* TABS */
+function tab(id,btn){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.t-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* VITALS */
+function rv(){
+  const hc=parseInt(document.getElementById('hp-c').value)||0;
+  const hm=Math.min(parseInt(document.getElementById('hp-m').value)||10,30);
+  const pc=Math.min(parseInt(document.getElementById('pe-c').value)||0,5);
+  const ht=document.getElementById('hp-t');
+  ht.innerHTML='';
+  for(let i=0;i<hm;i++){const p=document.createElement('div');p.className='hp-pip'+(i<hc?' on':'');p.onclick=()=>{document.getElementById('hp-c').value=i<hc?i:i+1;rv();};ht.appendChild(p);}
+  const pt=document.getElementById('pe-t');
+  pt.innerHTML='';
+  for(let i=0;i<5;i++){const b=document.createElement('div');b.className='pe-box'+(i<pc?' on':'');b.onclick=()=>{document.getElementById('pe-c').value=i<pc?i:i+1;rv();};pt.appendChild(b);}
+}
+rv();
+
+/* ATRIBUTOS */
+const ATTRS=[{k:'FOR',n:'Força'},{k:'DES',n:'Destreza'},{k:'CON',n:'Constituição'},{k:'INT',n:'Inteligência'},{k:'PRE',n:'Presença'},{k:'CAR',n:'Carisma'}];
+const AV={};
+ATTRS.forEach(a=>AV[a.k]=1);
+function bA(){
+  const g=document.getElementById('ag');g.innerHTML='';
+  ATTRS.forEach(a=>{
+    const c=document.createElement('div');c.className='attr-card';
+    const d=[1,2,3,4,5].map(n=>`<div class="dot ${AV[a.k]>=n?'on':''}" onclick="sA('${a.k}',${n})"></div>`).join('');
+    c.innerHTML=`<div class="attr-name">${a.n}</div><div class="attr-dots">${d}</div><div class="attr-val">${AV[a.k]}/5</div>`;
+    g.appendChild(c);
+  });
+}
+function sA(k,v){AV[k]=AV[k]===v?v-1:v;if(AV[k]<0)AV[k]=0;bA();}
+bA();
+
+/* CONDIÇÕES */
+const CONDS=[
+  {n:'Abalado',d:'O personagem sofre −1d10 em testes. Se ficar abalado novamente, em vez disso fica apavorado.',t:'Condição de medo'},
+  {n:'Agarrado',d:'O personagem fica desprevenido e imóvel, sofre −1d10 em testes de ataque e só pode atacar com armas leves. Um ataque à distância contra alvo envolvido na manobra tem 50% de chance de acertar o alvo errado.',t:'Condição de paralisia'},
+  {n:'Apavorado',d:'O personagem sofre −2d10 em testes de perícia e deve fugir da fonte do medo da maneira mais eficiente possível. Se não puder, poderá agir, mas não pode se aproximar voluntariamente da fonte do medo.',t:'Condição de medo'},
+  {n:'Asfixiado',d:'O personagem não pode respirar. Pode prender a respiração por rodadas igual ao seu Vigor. Depois disso, faz Fortitude por rodada (DT 5+5 por teste anterior). Se falhar, cai inconsciente e perde 1d6 PV por rodada até respirar ou morrer.',t:''},
+  {n:'Atordoado',d:'O personagem fica desprevenido e não pode fazer ações.',t:'Condição mental'},
+  {n:'Caído',d:'Deitado no chão. Sofre −2d10 em ataques corpo a corpo e deslocamento reduzido a 1,5m. Sofre −5 na Defesa contra corpo a corpo, mas recebe +5 na Defesa contra ataques à distância.',t:''},
+  {n:'Cego',d:'O personagem não pode ver. Fica desprevenido, sofre −5 na Defesa e −2d10 em testes que dependam de visão. Ataques têm 50% de chance de errar automaticamente.',t:'Condição de sentido'},
+  {n:'Confuso',d:'O personagem age de forma aleatória no início de cada turno (1d6: 1–2 ataca alvo aleatório, 3–4 fica parado, 5–6 age normalmente).',t:'Condição mental'},
+  {n:'Desprevenido',d:'O personagem perde o bônus de Destreza à Defesa e fica vulnerável a ataques furtivos.',t:''},
+  {n:'Envenenado',d:'O personagem sofre penalidade conforme o veneno específico. Geralmente sofre dano por rodada ou penalidades em testes até ser curado.',t:'Condição de veneno'},
+  {n:'Exausto',d:'O personagem sofre −2d10 em todos os testes físicos. Se ficar exausto novamente, fica fatigado.',t:'Condição física'},
+  {n:'Fascinado',d:'O personagem fica parado, olhando fixamente para a fonte de fascinação, e não pode fazer ações. É rompido por ameaças óbvias ou dano.',t:'Condição mental'},
+  {n:'Imóvel',d:'O personagem não pode se mover. Mantém bônus de Destreza à Defesa.',t:''},
+  {n:'Invisível',d:'O personagem não pode ser visto. Atacantes sofrem 50% de chance de errar. Pode tentar se esconder mesmo sem cobertura.',t:''},
+  {n:'Surdo',d:'O personagem não pode ouvir. Sofre −2d10 em testes que dependam de audição e falha automática em testes de Percepção auditiva.',t:'Condição de sentido'},
+];
+const CA=new Set();
+function bC(){
+  const l=document.getElementById('cl');l.innerHTML='';
+  CONDS.forEach((c,i)=>{
+    const el=document.createElement('div');
+    el.className='cond-item'+(CA.has(i)?' active':'');
+    el.onclick=()=>{CA.has(i)?CA.delete(i):CA.add(i);bC();};
+    el.innerHTML=`<div class="cond-box">${CA.has(i)?'✕':''}</div><div class="cond-body"><div class="cond-name">${c.n}</div><div class="cond-desc">${c.d}</div>${c.t?`<span class="cond-tag">[${c.t}]</span>`:''}</div>`;
+    l.appendChild(el);
+  });
+}
+bC();
+
+/* PERÍCIAS */
+const PERIS=[
+  {n:'Acrobacia',a:'DES'},{n:'Adestramento',a:'PRE'},{n:'Arcanismo',a:'INT'},{n:'Atletismo',a:'FOR'},
+  {n:'Enganação',a:'CAR'},{n:'Engenharia a Vapor',a:'INT'},{n:'Fortitude',a:'CON'},{n:'Furtividade',a:'DES'},
+  {n:'História',a:'INT'},{n:'Intimidação',a:'CAR'},{n:'Investigação',a:'INT'},{n:'Intuição',a:'PRE'},
+  {n:'Medicina',a:'INT'},{n:'Natureza',a:'INT'},{n:'Percepção',a:'PRE'},{n:'Performance',a:'CAR'},
+  {n:'Persuasão',a:'CAR'},{n:'Prestidigitação',a:'DES'},{n:'Reflexos',a:'DES'},{n:'Religião',a:'INT'},
+  {n:'Sobrevivência',a:'PRE'},{n:'Tecnologia',a:'INT'},{n:'Vontade',a:'PRE'},
+];
+const pl=document.getElementById('pl');
+PERIS.forEach((p,i)=>{
+  const r=document.createElement('div');r.className='peri-row';
+  r.innerHTML=`<input type="checkbox" class="peri-chk" id="pc${i}"><label class="peri-name" for="pc${i}">${p.n}</label><span class="peri-atr">${p.a}</span><input class="peri-bon" type="text" value="+0">`;
+  pl.appendChild(r);
+});
+
+/* HABILIDADES */
+function addH(){
+  const l=document.getElementById('hl');
+  const c=document.createElement('div');c.className='hab-card';
+  c.innerHTML=`<div class="hab-hdr"><input class="hab-name" type="text" placeholder="Nome da habilidade..."><select class="hab-type"><option>Passiva</option><option>Ativa</option><option>Reação</option><option>Especial</option><option>Poder</option></select><button class="hab-del" onclick="this.closest('.hab-card').remove()">×</button></div><textarea class="hab-desc" placeholder="Descrição, efeitos, custo, limitações..."></textarea>`;
+  l.appendChild(c);
+}
+addH();
+
+/* INVENTÁRIO */
+function addI(){
+  const l=document.getElementById('il');
+  const r=document.createElement('div');r.className='inv-row';
+  r.innerHTML=`<input class="inv-in" type="text" placeholder="Nome do item..."><input class="inv-in" type="text" placeholder="Tipo"><input class="inv-in" type="number" value="1" style="text-align:center;"><input class="inv-in" type="text" placeholder="Obs."><button class="inv-del" onclick="this.closest('.inv-row').remove()">✕</button>`;
+  l.appendChild(r);
+}
+for(let i=0;i<5;i++)addI();
+</script>
+</body>
+</html>
